@@ -1,5 +1,18 @@
 from django import forms
-from .models import Page, Category
+from django.contrib.auth.models import User
+from .models import Page, Category, UserProfile
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ("username", "password", "email")
+
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ("website", "picture")
 
 
 class CategoryForm(forms.ModelForm):

@@ -1,9 +1,33 @@
+from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from .models import Category, Page
-from .forms import CategoryForm, PageForm
+from .forms import CategoryForm, PageForm, UserForm, UserProfileForm
+
+
+def register(request):
+    registered = False
+    if request.method == "POST":
+        user_form = UserForm(request.POST)
+        profile_form = UserProfileForm(request.POST)
+        if user_form.is_valid() and profile_form.is_valid():
+            # user = user_form.save() # directly save the raw password
+            # user.set_password(user.password) # hash it
+            # user.save()
+            user = User.objects.create_user(request.POST.get("username"), request.POST.get("email"), request.POST.get("password"))
+            profile = profile_form.save(commit=False)
+            profile.user = user
+            if "picture" in request.FILES:
+                profile.picture = request.FILES["picture"]
+            profile.save()
+            registered = True
+    else:
+        user_form = UserForm()
+        profile_form = UserProfileForm()
+    return render(request, "rango/register.html",
+                  {"user_form": user_form, "profile_form": profile_form, "registered": registered})
 
 
 def index(request):
