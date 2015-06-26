@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
@@ -33,7 +33,7 @@ def register(request):
 
 
 def user_login(request):
-    if request.user:
+    if request.user.is_authenticated():
         return HttpResponseRedirect("/rango")
     if request.method == "POST":
         username = request.POST.get("username")
@@ -50,6 +50,9 @@ def user_login(request):
     else:
         return render(request, "rango/login.html")
 
+def user_logout(request):
+    logout(request)
+    return HttpResponseRedirect("/rango")
 
 def index(request):
     # return HttpResponse("Rango says hey there world!")
