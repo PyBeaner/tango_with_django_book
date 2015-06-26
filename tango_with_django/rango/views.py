@@ -1,5 +1,6 @@
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
@@ -16,7 +17,8 @@ def register(request):
             # user = user_form.save() # directly save the raw password
             # user.set_password(user.password) # hash it
             # user.save()
-            user = User.objects.create_user(request.POST.get("username"), request.POST.get("email"), request.POST.get("password"))
+            user = User.objects.create_user(request.POST.get("username"), request.POST.get("email"),
+                                            request.POST.get("password"))
             profile = profile_form.save(commit=False)
             profile.user = user
             if "picture" in request.FILES:
@@ -28,6 +30,23 @@ def register(request):
         profile_form = UserProfileForm()
     return render(request, "rango/register.html",
                   {"user_form": user_form, "profile_form": profile_form, "registered": registered})
+
+
+def user_login(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(username=username, password=password)
+        if user:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect("/rango")
+            else:
+                return HttpResponse("Your account is disabled!")
+        else:
+            return HttpResponse("Invalid login details supplied.")
+    else:
+        return render(request, "rango/login.html")
 
 
 def index(request):
