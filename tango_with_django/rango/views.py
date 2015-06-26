@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
@@ -50,9 +51,16 @@ def user_login(request):
     else:
         return render(request, "rango/login.html")
 
+@login_required
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect("/rango")
+
+
+@login_required
+def restricted(request):
+    return HttpResponse("Hello you're logged in")
+
 
 def index(request):
     # return HttpResponse("Rango says hey there world!")
