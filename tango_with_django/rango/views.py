@@ -74,17 +74,18 @@ def index(request):
     context = {"categories": categories}
 
     reset_last_visit_time = False
-    visits = request.COOKIES.get("visits", 1)
+    visits = int(request.COOKIES.get("visits", 1))
     if "last_visit" in request.COOKIES:
         last_visit = request.COOKIES.get("last_visit")
         # 2015-01-01 00:00:00.123456
         last_visit_time = datetime.strptime(last_visit[:-7], "%Y-%m-%d %H:%M:%S")
         # more than one day since the last visit
-        if (datetime.now() - last_visit_time).days > 0:
+        if (datetime.now() - last_visit_time).seconds > 5:
             visits += 1
+            reset_last_visit_time = True
     else:
         reset_last_visit_time = True
-
+        
     response = render(request, "rango/index.html", context)
     if reset_last_visit_time:
         response.set_cookie("last_visit", datetime.now())
