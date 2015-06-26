@@ -17,9 +17,10 @@ def index(request):
 
 
 def category(request, category_name_slug):
+    category_name_slug = category_name_slug.lower()
     context = {}
-    cat = get_object_or_404(Category, {"slug", category_name_slug})
+    cat = get_object_or_404(Category, slug=category_name_slug)
     pages = Page.objects.filter(category=cat)
     context["pages"] = pages
     context["category"] = cat
-    return render(request,"rango/category.html",context)
+    return render(request, "rango/category.html", context)
