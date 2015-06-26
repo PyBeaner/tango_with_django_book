@@ -34,6 +34,10 @@ def register(request):
 
 
 def user_login(request):
+    if request.session.test_cookie_worked():
+        print("====TEST COOKIE WORKED")
+        request.session.delete_test_cookie()
+
     if request.user.is_authenticated():
         return HttpResponseRedirect("/rango")
     if request.method == "POST":
@@ -51,6 +55,7 @@ def user_login(request):
     else:
         return render(request, "rango/login.html")
 
+
 @login_required
 def user_logout(request):
     logout(request)
@@ -67,6 +72,9 @@ def index(request):
 
     # context_dict = {'boldmessage': "I am bold font from the context"}
     # return render(request, "rango/index.html",context=context_dict)
+
+    # test if cookie is supported
+    request.session.set_test_cookie()
 
     categories = Category.objects.all()
     context = {"categories": categories}
