@@ -15,7 +15,7 @@
         {% if user.is_authenticated %}
             <li><a href="/rango/restricted/">Restricted Page</a></li>
             <li><a href="/rango/logout/">Logout</a></li>
-            <li><a href="/rango/add_category/">Add a New Category</a></li>
+            <li><a href="{% url 'rango:add_category' %}">Add a New Category</a></li>
         {% else %}
             <a href="{% url 'rango:login' %}">Login</a><br>
             <a href="{% url 'rango:register' %}">Register</a><br>
