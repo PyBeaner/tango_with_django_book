@@ -107,3 +107,7 @@ def add_page(request, category_name_slug):
         form = PageForm()
     context = {"form": form, "category": cat}
     return render(request, "rango/add_page.html", context)
+
+
+def about(request):
+    return render(request, 'rango/about.html', {})

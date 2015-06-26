@@ -20,7 +20,7 @@
             <a href="{% url 'rango:login' %}">Login</a><br>
             <a href="{% url 'rango:register' %}">Register</a><br>
         {% endif %}
-        <li><a href="/rango/about/">About</a></li>
+        <li><a href="{% url 'rango:about' %}">About</a></li>
     </ul>
 </div>
 </body>
