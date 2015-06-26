@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -34,10 +35,6 @@ def register(request):
 
 
 def user_login(request):
-    if request.session.test_cookie_worked():
-        print("====TEST COOKIE WORKED")
-        request.session.delete_test_cookie()
-
     if request.user.is_authenticated():
         return HttpResponseRedirect("/rango")
     if request.method == "POST":
@@ -73,12 +70,25 @@ def index(request):
     # context_dict = {'boldmessage': "I am bold font from the context"}
     # return render(request, "rango/index.html",context=context_dict)
 
-    # test if cookie is supported
-    request.session.set_test_cookie()
-
     categories = Category.objects.all()
     context = {"categories": categories}
-    return render(request, "rango/index.html", context=context)
+
+    reset_last_visit_time = False
+    visits = request.COOKIES.get("visits", 1)
+    if "last_visit" in request.COOKIES:
+        last_visit = request.COOKIES.get("last_visit")
+        last_visit_time = datetime.strptime(last_visit[:-7], "%Y-%m-%d %H:%M:%S")
+        if (datetime.now() - last_visit_time).days > 0:
+            visits += 1
+    else:
+        reset_last_visit_time = True
+
+    response = render(request, "rango/index.html", context)
+    if reset_last_visit_time:
+        response.set_cookie("last_visit", datetime.now())
+        response.set_cookie("visits", visits)
+    return response
+    # return render(request, "rango/index.html", context=context)
 
 
 def category(request, category_name_slug):
