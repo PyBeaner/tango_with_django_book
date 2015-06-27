@@ -40,6 +40,7 @@ INSTALLED_APPS = (
 
     # Project's apps
     "rango",
+    "bootstrap_toolkit",
 )
 
 MIDDLEWARE_CLASSES = (
