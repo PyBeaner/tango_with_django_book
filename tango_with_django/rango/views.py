@@ -71,7 +71,8 @@ def index(request):
     # return render(request, "rango/index.html",context=context_dict)
 
     categories = Category.objects.all()
-    context = {"categories": categories}
+    pages = Page.objects.all()
+    context = {"categories": categories, "pages": pages}
 
     reset_last_visit_time = False
     # visits = int(request.COOKIES.get("visits", 1))
